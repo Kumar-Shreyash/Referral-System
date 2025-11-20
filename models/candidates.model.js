@@ -6,6 +6,7 @@ const candidateSchema=new mongoose.Schema({
     mobile:{type:String,required:true,unique:true,minlength:10,maxlength:10},
     jobTitle:{type:String,required:true},
     status:{type:String,enum:["Pending","Reviewed","Hired"],default:"Pending"},
+    referredBy:{type: mongoose.Schema.Types.ObjectId, ref: "users"},
     referredOn:{type:Date,default:Date.now}
 })
 

@@ -76,16 +76,12 @@ const updateRef = async (req, res) => {
 const deleteCandidate=async(req,res)=>{
     try {
         const {id}=req.params
-        const role=req.role
         const userId=req.user
         const candidate=await CandidateModel.findById(id)
         if(!candidate){
             return res.status(404).json({message:"No candidate found"})
         }
-        if(role==="admin"){
-            await CandidateModel.findByIdAndDelete(id)
-            return res.status(200).json({message:"Candidate deleted"})
-        }else if(candidate.referredBy.toString()===userId){
+         if(candidate.referredBy.toString()===userId){
             await CandidateModel.findByIdAndDelete(id)
             return res.status(200).json({message:"Candidate deleted"})
         }
