@@ -59,7 +59,7 @@ const signIn = async (req, res) => {
     );
     res.setHeader("authorization", `Bearer ${accessToken}`)
     res.setHeader("refreshtoken", `Bearer ${refreshToken}`)
-    res.status(200).json({message:"Login successful",accessToken,refreshToken})
+    res.status(200).json({message:"Login successful",accessToken,refreshToken,user})
   } catch (error) {
     res
       .status(500)
