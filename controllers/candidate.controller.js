@@ -3,7 +3,7 @@ const UserModel = require("../models/user.model");
 
 const referCandidate = async (req, res) => {
   try {
-    const {userId}  = req.user;
+    const { userId } = req.user;
     const { email, name, mobile, jobTitle } = req.body;
     if (!email.trim() || !name.trim() || !mobile.trim() || !jobTitle.trim()) {
       return res.status(400).json({ message: "All fields are required" });
@@ -23,7 +23,7 @@ const referCandidate = async (req, res) => {
       referredBy: userId,
     });
     // console.log(2,typeof userId)
-    let user = await UserModel.findOne({userId});
+    let user = await UserModel.findOne({ userId });
     // console.log(3,user)
     user.referrals.push(referral._id);
     // console.log(5)
@@ -31,7 +31,9 @@ const referCandidate = async (req, res) => {
     // console.log(6)
     res.status(201).json({ message: "Successfully referred" });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong, try again later",error });
+    res
+      .status(500)
+      .json({ message: "Something went wrong, try again later", error });
   }
 };
 
@@ -73,22 +75,31 @@ const updateRef = async (req, res) => {
   }
 };
 
-const deleteCandidate=async(req,res)=>{
-    try {
-        const {id}=req.params
-        const userId=req.user
-        const candidate=await CandidateModel.findById(id)
-        if(!candidate){
-            return res.status(404).json({message:"No candidate found"})
-        }
-         if(candidate.referredBy.toString()===userId){
-            await CandidateModel.findByIdAndDelete(id)
-            return res.status(200).json({message:"Candidate deleted"})
-        }
-        res.status(401).json({message:"Unauthorized action"})
-    } catch (error) {
-        res.status(500).json({ message: "Something went wrong, please try again" });
+const deleteCandidate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {userId} = req.user;
+    const candidate = await CandidateModel.findById(id);
+    if (!candidate) {
+      return res.status(404).json({ message: "No candidate found" });
     }
-}
+    if (candidate.referredBy.toString() === userId) {
+      await CandidateModel.findByIdAndDelete(id);
+      await UserModel.updateOne(
+        { _id: req.user },
+        { $pull: { referrals: id } }
+      );
+      return res.status(200).json({ message: "Candidate deleted" });
+    }
+    res.status(401).json({ message: "Unauthorized action" });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong, please try again" });
+  }
+};
 
-module.exports = { referCandidate, updateRef, candidatesReffered, deleteCandidate};
+module.exports = {
+  referCandidate,
+  updateRef,
+  candidatesReffered,
+  deleteCandidate,
+};
