@@ -3,7 +3,7 @@ const UserModel = require("../models/user.model");
 
 const referCandidate = async (req, res) => {
   try {
-    const { userId } = req.user;
+    const {userId}  = req.user;
     const { email, name, mobile, jobTitle } = req.body;
     if (!email.trim() || !name.trim() || !mobile.trim() || !jobTitle.trim()) {
       return res.status(400).json({ message: "All fields are required" });
@@ -14,6 +14,7 @@ const referCandidate = async (req, res) => {
         .status(409)
         .json({ message: "Candidate already referred for this role." });
     }
+    // console.log(1)
     const referral = await CandidateModel.create({
       email,
       name,
@@ -21,12 +22,16 @@ const referCandidate = async (req, res) => {
       jobTitle,
       referredBy: userId,
     });
-    let user = await UserModel.findById(userId);
+    // console.log(2,typeof userId)
+    let user = await UserModel.findOne({userId});
+    // console.log(3,user)
     user.referrals.push(referral._id);
+    // console.log(5)
     await user.save();
+    // console.log(6)
     res.status(201).json({ message: "Successfully referred" });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong, try again later" });
+    res.status(500).json({ message: "Something went wrong, try again later",error });
   }
 };
 

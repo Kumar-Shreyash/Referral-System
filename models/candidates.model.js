@@ -9,5 +9,5 @@ const candidateSchema=new mongoose.Schema({
     referredOn:{type:Date,default:Date.now}
 })
 
-const CandidateModel=mongoose.model("Candidates",candidateSchema)
+const CandidateModel=mongoose.model("candidates",candidateSchema)
 module.exports={CandidateModel}

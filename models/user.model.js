@@ -7,5 +7,5 @@ const userSchema=new mongoose.Schema({
     referrals:[{ type: mongoose.Schema.Types.ObjectId, ref: "Candidates" }]
 })
 
-const UserModel=mongoose.model("Users",userSchema)
+const UserModel=mongoose.model("users",userSchema)
 module.exports=UserModel
